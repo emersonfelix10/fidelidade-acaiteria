@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartão Fidelidade Açaíteria Juazeiro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #222;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            margin: 15px 0;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>📍 Cartão Fidelidade</h1>
+    <p>Digite seu telefone para ver seus pontos:</p>
+    <input type="text" id="telefone" placeholder="Seu telefone">
+    <button onclick="consultarPontos()">Ver meus pontos</button>
+    <div id="resultado"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://xougypaiotebzyndurxh.supabase.co";
+        const SUPABASE_KEY = "sb_public_sha_1oPhIdZw8pZXfNpIPU44Rg_kx3-t-";
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function consultarPontos(){
+            const tel = document.getElementById("telefone").value.trim();
+            const res = document.getElementById("resultado");
+            if(!tel){
+                res.textContent="Digite o telefone!";
+                res.style.color="red";
+                return;
+            }
+            const {data, error} = await client.from("Clientes").select("pontos").eq("telefone", tel).single();
+            if(error){
+                res.textContent="Nenhum ponto encontrado para esse telefone.";
+                res.style.color="orange";
+            }else{
+                res.textContent = `Você tem ${data.pontos} ponto(s)!`;
+                res.style.color="green";
+            }
+        }
+    </script>
+</body>
+</html>

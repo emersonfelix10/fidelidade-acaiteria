@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartão Fidelidade Açaíteria</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            color: #6b21a8;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 18px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            background-color: #6b21a8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #581c87;
+        }
+        .resultado {
+            margin-top: 30px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍧 Cartão Fidelidade</h1>
+    <p>Digite seu telefone para ver seus pontos:</p>
+    <input type="text" id="telefone" placeholder="(88) 99999-9999">
+    <button onclick="consultarPontos()">Ver meus pontos</button>
+    <div class="resultado" id="resultado"></div>
+
+    <script>
+        const SUPABASE_URL = "https://xougypaiotebzyndurxh.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_ioPHdIwBpZKfNnjIPUA4Rg_Xs3-tDLu";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function consultarPontos() {
+            const telefone = document.getElementById("telefone").value;
+            const { data } = await supabase
+                .from("clientes")
+                .select("pontos")
+                .eq("telefone", telefone)
+                .single();
+
+            if (data) {
+                document.getElementById("resultado").innerText = `Você tem ${data.pontos} ponto(s)!`;
+            } else {
+                document.getElementById("resultado").innerText = "Nenhum ponto encontrado para esse telefone.";
+            }
+        }
+    </script>
+</body>
+</html>

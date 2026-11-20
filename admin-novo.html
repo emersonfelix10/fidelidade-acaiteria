@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Adicionar Ponto</title>
+    <style>
+        body{font-family:Arial,sans-serif;max-width:420px;margin:40px auto;padding:20px;}
+        h1{text-align:center;color:#222;}
+        input{width:100%;padding:12px;font-size:18px;margin:15px 0;box-sizing:border-box;}
+        button{width:100%;padding:14px;font-size:20px;background:#2563eb;color:white;border:none;border-radius:8px;cursor:pointer;}
+        button:hover{background:#1d4ed8;}
+        #mensagem{margin-top:20px;text-align:center;font-size:18px;}
+    </style>
+</head>
+<body>
+    <h1>Adicionar +1 Ponto</h1>
+    <input type="text" id="telefone" placeholder="Digite o telefone do cliente">
+    <button onclick="adicionarPonto()">+1 Ponto</button>
+    <div id="mensagem"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://xougypaiotebzyndurxh.supabase.co";
+        const SUPABASE_KEY = "sb_public_sha_1oPhIdZw8pZXfNpIPU44Rg_kx3-t-";
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function adicionarPonto(){
+            const tel = document.getElementById("telefone").value.trim();
+            const msg = document.getElementById("mensagem");
+            if(!tel){msg.textContent="Digite o telefone!";msg.style.color="red";return;}
+
+            const {data: cliente} = await client.from("Clientes").select("*").eq("telefone", tel).single();
+
+            if(cliente){
+                await client.from("Clientes").update({pontos: cliente.pontos + 1}).eq("telefone", tel);
+                msg.textContent = `Ponto adicionado! Agora tem ${cliente.pontos + 1} pontos.`;
+                msg.style.color = "green";
+            }else{
+                await client.from("Clientes").insert({telefone: tel, pontos: 1});
+                msg.textContent = "Cliente criado! Primeiro ponto adicionado.";
+                msg.style.color = "green";
+            }
+        }
+    </script>
+</body>
+</html>
